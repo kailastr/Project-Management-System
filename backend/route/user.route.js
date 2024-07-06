@@ -1,7 +1,7 @@
 import express from 'express';
 
 //import controller
-import { SignUp, login, logout } from '../controller/user.controller.js';
+import { SignUp, login } from '../controller/user.controller.js';
 
 const router = express.Router();
 
@@ -22,14 +22,5 @@ router.post('/signup', SignUp);
 * paramater: none
 */
 router.post('/login', login);
-
-/* 
-* path: /user/logout
-* method: POST
-* description : Route for user Logout
-* access: Public
-* paramater: none
-*/
-router.post('/logout', logout);
 
 export default router;

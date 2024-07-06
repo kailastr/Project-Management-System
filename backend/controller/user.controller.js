@@ -1,5 +1,48 @@
-export const SignUp = () => { }
+import UserModel from "../model/user.model.js";
+import bcrypt from 'bcrypt';
+
+export const SignUp = async (req, res) => {
+    // console.log("signup Controller working");
+    try {
+        const { fullName, userName, password, confirmPassword, gender } = req.body;
+        // console.log(fullName, userName, password, confirmPassword, gender);
+
+        //used to verify both the passswords are matching
+        if (password !== confirmPassword) {
+            return res.status(400).send("Password Doesn't Match");
+        }
+
+        //checking if the username is already in the database
+        const user = await UserModel.findOne({ userName });
+        if (user) {
+            return res.status(400).json({ message: "User Already exist" });
+        }
+
+        //hashing our password
+        const salt = await bcrypt.genSalt(8);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        //creating a new user with the help of UserModel
+        const newUser = new UserModel({
+            fullName: fullName,
+            userName: userName,
+            password: hashedPassword,
+            gender: gender
+        });
+
+        if (newUser) {
+            //saving the data in the database
+            await newUser.save();
+
+            //returning the new user's details as responce
+            return res.status(200).json({
+                "Successfuly created new user": newUser
+            });
+        };
+
+    } catch (error) {
+        return res.status(400).send(error.message);
+    }
+};
 
 export const login = () => { }
-
-export const logout = () => { }

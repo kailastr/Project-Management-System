@@ -7,6 +7,7 @@ import connectDB from './db/dbConnection.js'
 
 //import routes
 import User from './route/user.route.js'
+import Project from './route/project.route.js'
 
 //PORT No. variable
 const PORT = 5000;
@@ -15,7 +16,10 @@ const PORT = 5000;
 dotenv.config();
 const app = express();
 app.use(express.json());
+
+//re-directing routes
 app.use('/user', User);
+app.use('/project', Project);
 
 // http://localhost:5000/
 

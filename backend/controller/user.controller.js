@@ -15,7 +15,7 @@ export const SignUp = async (req, res) => {
         //checking if the username is already in the database
         const user = await UserModel.findOne({ userName });
         if (user) {
-            return res.status(400).json({ message: "User Already exist" });
+            return res.status(400).json({ message: "Username Already exist" });
         }
 
         //hashing our password
@@ -45,4 +45,27 @@ export const SignUp = async (req, res) => {
     }
 };
 
-export const login = () => { }
+export const login = async (req, res) => {
+    try {
+
+        const { userName, password } = req.body;
+
+        const validUser = await UserModel.findOne({ userName });
+        const isPasswordValid = await bcrypt.compare(password, validUser?.password || "");
+
+        if (!validUser) {
+            return res.json({ error: "Invalid Username" });
+        }
+
+        if (!isPasswordValid) {
+            return res.json({ error: "Invalid Password" });
+        }
+
+        if (validUser) {
+            return res.status(200).json({ validUser });
+        }
+
+    } catch (error) {
+        return res.status(400).json({ error: error.message });
+    }
+}

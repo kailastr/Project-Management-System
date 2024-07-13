@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom';
 
 const SignUpPage = () => {
 
@@ -107,7 +108,10 @@ const SignUpPage = () => {
                             SUBMIT
                         </button>
                         <p className='text-center'>
-                            Already have an account ? <span className='text-blue-700 underline decoration-blue-700 cursor-pointer'>Login</span>
+                            Already have an account ?
+                            <Link to={"/login"}>
+                                <span className='text-blue-700 underline decoration-blue-700 cursor-pointer'>Login</span>
+                            </Link>
                         </p>
                     </form>
                 </div>

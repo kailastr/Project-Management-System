@@ -1,6 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'
 
 const CreateProjectPage = () => {
+
+    const navigate = useNavigate();
 
     const [projectTitle, setProjectTitle] = useState("");
     const [projectDescription, setProjectDescription] = useState("");
@@ -21,9 +24,40 @@ const CreateProjectPage = () => {
         }
     }
 
-    const submitProject = (e) => {
+    const submitProject = async (e) => {
         e.preventDefault();
-        console.log(projectTitle, projectDescription, startDate, deadline, client, team, budget);
+        //console.log(projectTitle, projectDescription, startDate, deadline, client, team, budget);
+        try {
+            if (!localStorage.userId) {
+                alert("Login to create a project..");
+                navigate('/login');
+            } else {
+                const responce = await fetch('http://localhost:5000/project/create', {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        //projectTitle, projectDescription, startDate, deadline, client,team, budget
+                        projectTitle: projectTitle,
+                        projectDescription: projectDescription,
+                        startDate: startDate,
+                        deadline: deadline,
+                        client: client,
+                        team: team,
+                        budget: budget
+                    })
+                });
+                // console.log(responce);
+
+                if (!responce.ok) {
+                    throw new Error("Some issues occured ..Try again later");
+                } else {
+                    alert("Successfully created a new project");
+                    navigate('/viewProjects');
+                }
+            }
+        } catch (error) {
+            alert(error);
+        }
     }
 
     return (
@@ -141,7 +175,7 @@ const CreateProjectPage = () => {
                                         onChange={e => setTeamMember(e.target.value)}
                                         className='w-11/12 border-none focus:outline-cyan-400 px-2'
                                         placeholder='Enter your team members name like : User1, User2, ..'
-                                        // required
+                                    // required
                                     />
                                 </div>
                                 <p className='text-gray-500'>Project Team Members : {team.map((member, index) => <span key={index}>{member}{index < team.length - 1 ? ", " : ""}</span>)}</p>

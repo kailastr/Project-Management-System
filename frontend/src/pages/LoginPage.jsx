@@ -1,14 +1,41 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
+
+    const navigate = useNavigate();
 
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
 
-    const loginSubmit = (e) => {
+    const loginSubmit = async (e) => {
         e.preventDefault();
-        console.log(userName, password);
+        //console.log(userName, password);
+        try {
+            const responce = await axios.post('http://localhost:5000/user/login', {
+                userName: userName,
+                password: password
+            });
+            //console.log(responce.data);
+            const data = responce.data.validUser;
+
+            if (data) {
+                //to set the user's id to the localstorage
+                localStorage.setItem("userId", data._id);
+                navigate('/viewProjects');
+            }
+
+            if (responce.data.error) {
+                throw new Error(responce.data.error);
+            }
+
+        } catch (error) {
+            //console.log(error);
+            alert(error);
+        }
     }
 
     return (

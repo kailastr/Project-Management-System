@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // import MUI datatable
 import Paper from '@mui/material/Paper';
@@ -16,8 +17,12 @@ import Fab from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
 import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
+import axios from 'axios';
 
 const ProjectDataTable = () => {
+
+    const navigate = useNavigate();
+
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
@@ -31,66 +36,49 @@ const ProjectDataTable = () => {
     };
 
     const viewProject = (project) => {
-        console.log(project);
+        //console.log(project);
+        const id = project._id;
+        navigate(`/view/${id}`);
     }
     const editProject = (project) => {
         console.log(project);
     }
-    const deleteProject = (project) => {
-        console.log(project);
+    const deleteProject = async (project) => {
+        // console.log("delete", project);
+        if (!localStorage.userId) {
+            alert("Login to delete a data");
+            navigate('/login');
+        } else {
+            try {
+                const id = project._id;
+                // console.log(id);
+                const data = await axios.delete(`http://localhost:5000/project/delete/${id}`);
+                console.log(data);
+                alert("Successfully delete the data");
+
+                fetchProjects();
+            } catch (error) {
+                alert(error);
+            }
+        }
     }
 
     //useState variable to store the collection of project details
-    const [projects, setProjects] = useState([
-        {
-            "_id": "668d326369c75fd52ce2a09b",
-            "projectTitle": "e-commerce Site",
-            "projectDescription": "An e-commerce web-application using MERN stack",
-            "startDate": "2024-06-19T00:00:00.000Z",
-            "deadline": "2024-07-20T00:00:00.000Z",
-            "client": "Josh",
-            "team": [
-                "Alex",
-                "Binoy"
-            ],
-            "budget": 20000,
-            "createdAt": "2024-07-09T12:51:47.356Z",
-            "updatedAt": "2024-07-09T12:51:47.356Z",
-            "__v": 0
-        },
-        {
-            "_id": "668d339d19790646188b082e",
-            "projectTitle": "Chat-bot",
-            "projectDescription": "An chat-bot using React-chatGPT",
-            "startDate": "2024-07-19T00:00:00.000Z",
-            "deadline": "2024-10-20T00:00:00.000Z",
-            "client": "Alan",
-            "team": [
-                "Alex",
-                "Binoy"
-            ],
-            "budget": 500000,
-            "createdAt": "2024-07-09T12:57:01.710Z",
-            "updatedAt": "2024-07-09T13:21:17.978Z",
-            "__v": 0
-        },
-        {
-            "_id": "668d3a925248225551f102ed",
-            "projectTitle": "Ai Model",
-            "projectDescription": "An chat-bot using React-chatGPT",
-            "startDate": "2024-06-19T00:00:00.000Z",
-            "deadline": "2024-07-20T00:00:00.000Z",
-            "client": "Alan",
-            "team": [
-                "Alex",
-                "Binoy"
-            ],
-            "budget": 20000,
-            "createdAt": "2024-07-09T13:26:42.049Z",
-            "updatedAt": "2024-07-09T13:26:42.049Z",
-            "__v": 0
+    const [projects, setProjects] = useState([]);
+
+    const fetchProjects = async () => {
+        try {
+            const responce = await axios.get('http://localhost:5000/project/getall');
+            // console.log("responce : ", responce.data.projects);
+            setProjects(responce.data.projects);
+        } catch (error) {
+            alert(error);
         }
-    ]);
+    }
+
+    useEffect(() => {
+        fetchProjects();
+    }, []);
 
     return (
         <Paper sx={{ width: '100%', overflow: 'hidden' }}>

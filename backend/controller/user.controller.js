@@ -15,7 +15,7 @@ export const SignUp = async (req, res) => {
         //checking if the username is already in the database
         const user = await UserModel.findOne({ userName });
         if (user) {
-            return res.status(400).json({ message: "Username Already exist" });
+            return res.json({ message: "Username Already exist" });
         }
 
         //hashing our password
@@ -36,7 +36,7 @@ export const SignUp = async (req, res) => {
 
             //returning the new user's details as responce
             return res.status(200).json({
-                "Successfuly created new user": newUser
+                "validUser": newUser
             });
         };
 

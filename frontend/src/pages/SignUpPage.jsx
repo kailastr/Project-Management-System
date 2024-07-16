@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const SignUpPage = () => {
+
+    const navigate = useNavigate();
 
     const [fullName, setFullName] = useState("");
     const [userName, setUserName] = useState("");
@@ -9,9 +12,34 @@ const SignUpPage = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [gender, setGender] = useState("");
 
-    const signUpSubmit = (e) => {
+    const signUpSubmit = async (e) => {
         e.preventDefault();
-        console.log(fullName, userName, password, confirmPassword, gender);
+        // console.log(fullName, userName, password, confirmPassword, gender);
+        try {
+            const responce = await axios.post('http://localhost:5000/user/signup', {
+                fullName: fullName,
+                userName: userName,
+                password: password,
+                confirmPassword: confirmPassword,
+                gender: gender
+            });
+
+            const data = responce.data.validUser;
+            //console.log(responce.data);
+
+            if (data) {
+                localStorage.setItem('userId', data._id);
+                navigate('/viewProjects');
+            }
+
+            if (responce.data.message) {
+                // console.log(data);
+                throw new Error(responce.data.message);
+            }
+
+        } catch (error) {
+            alert(error);
+        }
     }
 
     return (

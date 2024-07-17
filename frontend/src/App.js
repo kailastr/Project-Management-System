@@ -1,14 +1,15 @@
 import './App.css';
+import { Navigate, Route, Routes } from 'react-router-dom';
 
 //import pages
+import Navbar from './components/Navbar/Navbar';
+import DefaultLayout from './components/Layout/DefaultLayout';
 import LoginPage from './pages/LoginPage';
 import SignUpPage from './pages/SignUpPage';
 import CreateProjectPage from './pages/CreateProject.Page';
 import ProjectCollectionPage from './pages/ProjectCollection.page';
-import Navbar from './components/Navbar/Navbar';
-import { Navigate, Route, Routes } from 'react-router-dom';
-import DefaultLayout from './components/Layout/DefaultLayout';
 import ViewProjectPage from './pages/ViewProject.Page';
+import EditProjectPage from './pages/EditProject.Page';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           <Route path='/addProject' element={<CreateProjectPage />} />
           <Route path='/login' element={<LoginPage />} />
           <Route path='/signup' element={<SignUpPage />} />
+          <Route path='/edit/:id' element={<EditProjectPage />} />
         </Route>
       </Routes>
     </>

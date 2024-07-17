@@ -41,7 +41,14 @@ const ProjectDataTable = () => {
         navigate(`/view/${id}`);
     }
     const editProject = (project) => {
-        console.log(project);
+        if (!localStorage.userId) {
+            alert("Login to edit a project");
+            navigate('/login');
+        }
+        else {
+            const id = project._id;
+            navigate(`/edit/${id}`, { state: { project } });
+        }
     }
     const deleteProject = async (project) => {
         // console.log("delete", project);
